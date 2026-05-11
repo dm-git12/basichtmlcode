@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Calculate Area of a Triangle</title>
+</head>
+
+<script>
+	
+function Add() {
+	Oper1 = document.getElementById("tbase").value
+	Oper2 = document.getElementById("theight").value
+	
+	result = parseFloat(Oper1) + parseFloat(Oper2)
+	
+	document.getElementById("tarea").value = parseFloat(result)
+}	
+
+function Subtract() {
+	Oper1 = document.getElementById("tbase").value
+	Oper2 = document.getElementById("theight").value
+	
+	result = parseFloat(Oper1) - parseFloat(Oper2)
+	
+	document.getElementById("tarea").value = parseFloat(result)
+}
+	
+function Multiply() {
+	Oper1 = document.getElementById("tbase").value
+	Oper2 = document.getElementById("theight").value
+	
+	result = parseFloat(Oper1) * parseInt(Oper2)
+	
+	document.getElementById("tarea").value = parseFloat(result)
+}
+
+function Divide() {
+	Oper1 = document.getElementById("tbase").value
+	Oper2 = document.getElementById("theight").value
+	
+	result = parseFloat(Oper1) / parseFloat(Oper2)
+	
+	document.getElementById("tarea").value = parseFloat(result)
+}
+
+function CalculatePyramid() {
+	Oper1 = document.getElementById("tbase").value
+	Oper2 = document.getElementById("theight").value
+	
+	result = parseFloat(Oper1) * parseFloat(Oper1) * (parseFloat(Oper2) / 3)
+
+  document.getElementById("tarea").value = parseFloat(result)
+}
+
+function Clear() {
+  const inputs = ["tbase", "theight", "tarea"]
+  inputs.forEach(id => document.getElementById(id).value = "")
+}
+</script>	
+	
+	
+	
+<body>
+<table width="575" height="307" border="0">
+  <tbody>
+    <tr>
+      <td width="406" height="89"><blockquote>
+        <blockquote>
+          <blockquote>
+            <h1>Operand 1</h1>
+          </blockquote>
+        </blockquote>
+      </blockquote></td>
+      <td width="159"><input type="text" name="tbase" id="tbase"></td>
+    </tr>
+    <tr>
+       <td height="91"><blockquote>
+        <blockquote>
+          <blockquote>
+            <h1>Operand 2</h1>
+          </blockquote>
+        </blockquote>
+      </blockquote></td>
+      <td><label for="textfield2">:</label>
+      <input type="text" name="theight" id="theight"></td>
+    </tr>
+    <tr>
+      <td><blockquote>
+        <blockquote>
+          <blockquote>
+            <h1>Result</h1>
+          </blockquote>
+        </blockquote>
+      </blockquote></td>
+      <td><label for="textfield3">:</label>
+      <input type="text" name="tarea" id="tarea"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+		  <input type="button" name="bCalc" id="bAdd" value="Add" onClick="Add()">
+		  <input type="button" name="bCalc" id="bSubtract" value="Subtract" onClick="Subtract()">
+		  <input type="button" name="bCalc" id="bMultiply" value="Multiply" onClick="Multiply()">
+		  <input type="button" name="bCalc" id="bDivide" value="Divide" onClick="Divide()">
+		  <input type="button" name="bCalc" id="bPyramid" value="Pyramid" onClick="CalculatePyramid()">
+      <input type="button" name="bCalc" id="bClear" value="Clear" onClick="Clear()">
+		</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
