@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blackjack: Grand Casino</title>
+  <style>
+    :root { --gold: #ffd700; --green: #0a4d21; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      text-align: center; margin: 0; height: 100vh; color: white;
+      background: radial-gradient(circle, #167135 0%, #0a4d21 100%);
+      overflow: hidden; perspective: 1000px;
+    }
+
+    /* Logo & Stats */
+    .logo { font-size: 50px; font-weight: 900; color: var(--gold); text-shadow: 2px 4px 10px rgba(0,0,0,0.5); padding: 20px; }
+    .stats { font-size: 20px; margin-bottom: 10px; background: rgba(0,0,0,0.3); display: inline-block; padding: 10px 30px; border-radius: 50px; }
+
+    /* The Table Layout */
+    .table { position: relative; width: 80%; margin: 0 auto; min-height: 400px; }
+    .deck-pile {
+        position: absolute; right: -50px; top: 20px;
+        width: 90px; height: 130px; background: #2c3e50;
+        border-radius: 8px; border: 2px solid white;
+        box-shadow: 5px 5px 0px #1a252f, 10px 10px 0px #1a252f;
+    }
+
+    /* Card Containers */
+    .card-zone { display: flex; justify-content: center; min-height: 150px; margin: 20px 0; }
+
+    /* 3D Card Animation */
+    .card {
+      width: 90px; height: 130px; margin: 0 10px;
+      position: relative; transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card.dealing { transform: translate(400px, -200px) rotate(20deg); opacity: 0; }
+    .card.flipped { transform: rotateY(180deg); }
+
+    .card-face {
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; border-radius: 8px;
+      display: flex; flex-direction: column; padding: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4); box-sizing: border-box;
+    }
+    .card-front { background: white; color: black; transform: rotateY(180deg); }
+    .card-back { background: #2c3e50; border: 3px solid white; color: white; display:flex; align-items:center; justify-content:center; font-size:40px; }
+    
+    .rank { font-weight: bold; font-size: 22px; text-align: left; }
+    .suit-big { font-size: 50px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+    .red { color: #d12d2d; }
+
+    /* Controls */
+    .controls { margin-top: 20px; }
+    button {
+      font-size: 18px; font-weight: bold; padding: 12px 30px;
+      margin: 5px; cursor: pointer; border: none; border-radius: 5px;
+      background: linear-gradient(to bottom, #ffd700, #b8860b);
+      color: #331100; box-shadow: 0 4px #8b6d00; transition: 0.1s;
+    }
+    button:hover { filter: brightness(1.1); }
+    button:active { transform: translateY(2px); box-shadow: 0 2px #8b6d00; }
+    button:disabled { filter: grayscale(1); opacity: 0.5; }
+
+    .msg { font-size: 28px; color: var(--gold); height: 40px; font-weight: bold; margin: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">♠ GRAND CASINO ♥</div>
+
+  <div class="stats">Bankroll: $<span id="bank">1000</span> | Bet: $<span id="bet">10</span></div>
+
+  <div class="table">
+    <div class="deck-pile"></div>
+    
+    <div id="dealer-score" style="color:rgba(255,255,255,0.7)">Dealer: ?</div>
+    <div id="dealer-hand" class="card-zone"></div>
+
+    <div class="msg" id="msg">Place Bet & Deal</div>
+
+    <div id="player-hand" class="card-zone"></div>
+    <div id="player-score">Player: 0</div>
+  </div>
+
+  <div class="controls">
+    <div id="bet-ui">
+        <button onclick="changeBet(-10)">-10</button>
+        <button onclick="startGame()" style="padding: 15px 60px; font-size: 22px;">DEAL</button>
+        <button onclick="changeBet(10)">+10</button>
+    </div>
+    <div id="action-ui" style="display:none">
+        <button onclick="playerHit()">HIT</button>
+        <button onclick="playerStand()">STAND</button>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let deck = [], playerHand = [], dealerHand = [], bank = 1000, currentBet = 10, gameOver = true;
+    const dealSfx = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'); // Card flick sound
+
+    function buildDeck() {
+      const suits = [['♠','black'], ['♣','black'], ['♥','red'], ['♦','red']];
+      const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+      deck = [];
+      for (let [s, c] of suits) {
+        for (let r of ranks) {
+          let v = parseInt(r) || (r === 'A' ? 11 : 10);
+          deck.push({ rank: r, suit: s, value: v, color: c });
+        }
+      }
+      deck.sort(() => Math.random() - 0.5);
+    }
+
+    function changeBet(n) { if(gameOver) { currentBet = Math.max(10, Math.min(bank, currentBet + n)); document.getElementById('bet').innerText = currentBet; } }
+
+    async function startGame() {
+      if (bank < currentBet) return;
+      document.getElementById('bgMusic').play(); // Starts on first interaction
+      gameOver = false; bank -= currentBet;
+      updateUI(); buildDeck();
+      playerHand = []; dealerHand = [];
+      document.getElementById('msg').innerText = "";
+      document.getElementById('bet-ui').style.display = 'none';
+      document.getElementById('action-ui').style.display = 'block';
+
+      // Deal initial cards with animation delay
+      await dealCard('player'); await dealCard('dealer');
+      await dealCard('player'); await dealCard('dealer', true); // Second dealer card hidden
+      
+      if(getScore(playerHand) === 21) endGame("BLACKJACK!", 2.5);
+    }
+
+    async function dealCard(target, hidden = false) {
+      const card = deck.pop();
+      const hand = target === 'player' ? playerHand : dealerHand;
+      hand.push(card);
+      
+      const container = document.getElementById(target + '-hand');
+      const cardEl = document.createElement('div');
+      cardEl.className = 'card dealing';
+      cardEl.innerHTML = `
+        <div class="card-face card-back">♠</div>
+        <div class="card-face card-front ${card.color}">
+            <div class="rank">${card.rank}</div>
+            <div class="suit-big">${card.suit}</div>
+        </div>
+      `;
+      container.appendChild(cardEl);
+      
+      // Trigger animation
+      setTimeout(() => { 
+        cardEl.classList.remove('dealing'); 
+        dealSfx.play();
+        if(!hidden) cardEl.classList.add('flipped');
+      }, 50);
+
+      await new Promise(r => setTimeout(r, 400));
+      updateScores();
+    }
+
+    async function playerHit() {
+      await dealCard('player');
+      if(getScore(playerHand) > 21) endGame("BUST!", 0);
+    }
+
+    async function playerStand() {
+      document.getElementById('action-ui').style.display = 'none';
+      const dealerCards = document.getElementById('dealer-hand').children;
+      dealerCards[1].classList.add('flipped'); // Reveal hidden card
+      
+      while(getScore(dealerHand) < 17) {
+        await dealCard('dealer');
+      }
+      
+      let p = getScore(playerHand), d = getScore(dealerHand);
+      if(d > 21) endGame("DEALER BUSTS!", 2);
+      else if(p > d) endGame("YOU WIN!", 2);
+      else if(p < d) endGame("DEALER WINS", 0);
+      else endGame("PUSH", 1);
+    }
+
+    function getScore(hand) {
+      let s = hand.reduce((a, b) => a + b.value, 0);
+      let aces = hand.filter(c => c.rank === 'A').length;
+      while(s > 21 && aces > 0) { s -= 10; aces--; }
+      return s;
+    }
+
+    function updateScores() {
+        document.getElementById('player-score').innerText = "Player: " + getScore(playerHand);
+    }
+
+    function endGame(m, mult) {
+      gameOver = true; bank += currentBet * mult;
+      document.getElementById('msg').innerText = m;
+      document.getElementById('bet-ui').style.display = 'block';
+      document.getElementById('action-ui').style.display = 'none';
+      document.getElementById('dealer-score').innerText = "Dealer: " + getScore(dealerHand);
+      updateUI();
+    }
+
+    function updateUI() { 
+        document.getElementById('bank').innerText = bank;
+        document.getElementById('dealer-hand').innerHTML = gameOver ? document.getElementById('dealer-hand').innerHTML : "";
+        document.getElementById('player-hand').innerHTML = gameOver ? document.getElementById('player-hand').innerHTML : "";
+    }
+  </script>
+</body>
+</html>
