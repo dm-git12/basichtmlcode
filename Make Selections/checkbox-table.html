@@ -37,40 +37,33 @@ function checkSelections(){
     drink = parseFloat(2.00);
     sundae = parseFloat(5.45);
 
-    switch(option){
-        case 1:
-            subtotal = pizza;
-            break;
-        case 2:
-            subtotal = chips;
-            break;
-        case 3:
-            subtotal = pizza + chips;
-            break;
-        case 4:
-            subtotal = drink;
-            break;
-        case 5:
-            subtotal = pizza + drink;
-            break;
-        case 6:
-            subtotal = chips + drink;
-            break;
-        case 8:
-            subtotal = sundae;
-            break;
-        case 9:
-            subtotal = pizza + sundae;
-            break;
-        case 10:
-            subtotal = chips + sundae;
-            break;
-        case 11:
-            subtotal = drink + sundae;
-            break;
-        default:
-            subtotal = pizza + drink + chips + sundae;
-    }
+    switch(option) {
+    case 1:  subtotal = pizza; 
+    break;
+    case 2:  subtotal = chips; 
+    break;
+    case 3:  subtotal = pizza + chips; 
+    break;
+    case 4:  subtotal = drink; 
+    break;
+    case 5:  subtotal = pizza + drink; 
+    break;
+    case 6:  subtotal = chips + drink; 
+    break;
+    case 7:  subtotal = pizza + chips + drink; 
+    break; 
+    case 8:  subtotal = sundae; 
+    break;
+    case 9:  subtotal = pizza + sundae; 
+    break;
+    case 10: subtotal = chips + sundae; 
+    break;
+    case 11: subtotal = drink + sundae; 
+    break;
+    default: 
+        subtotal = 0; 
+        break;
+}
     GST = subtotal * .1
     total = subtotal + GST
      
