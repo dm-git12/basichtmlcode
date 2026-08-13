@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Using Check Box and Option Button</title>
+<h1>Product Selections</h1>
+<h2>Select products and then click on Confirm Selections to see the totals</h2>
+</head>
+<script>
+
+let subtotal = 0
+let GST = 0
+let total = 0
+
+function checkSelections(){
+    var c1 =  document.getElementById("pizza").name;
+    var c2 =  document.getElementById("chips").name;
+    var c3 =  document.getElementById("drink").name;
+    var c4 =  document.getElementById("sundae").name;
+    var option = 0; var t1 = 0; var t2 = 0; var t3=0; var t4=0;
+    document.getElementById("subtotal").value = 0;
+
+    if (document.getElementById("pizza").checked == true) {
+        t1= 1; }
+
+    if (document.getElementById("chips").checked == true) {
+        t2=2;  }
+
+    if (document.getElementById("drink").checked == true) {
+        t3=4;  }
+    if (document.getElementById("sundae").checked == true) {
+        t4=8;  }
+    option = t1+t2+t3+t4
+
+    pizza = parseFloat(16.95);
+    chips = parseFloat(3.95);
+    drink = parseFloat(2.00);
+    sundae = parseFloat(5.45);
+
+    switch(option) {
+    case 1:  subtotal = pizza; 
+    break;
+    case 2:  subtotal = chips; 
+    break;
+    case 3:  subtotal = pizza + chips; 
+    break;
+    case 4:  subtotal = drink; 
+    break;
+    case 5:  subtotal = pizza + drink; 
+    break;
+    case 6:  subtotal = chips + drink; 
+    break;
+    case 7:  subtotal = pizza + chips + drink; 
+    break; 
+    case 8:  subtotal = sundae; 
+    break;
+    case 9:  subtotal = pizza + sundae; 
+    break;
+    case 10: subtotal = chips + sundae; 
+    break;
+    case 11: subtotal = drink + sundae; 
+    break;
+    default: 
+        subtotal = 0; 
+        break;
+}
+    GST = subtotal * .1
+    total = subtotal + GST
+     
+    subtotal = subtotal.toFixed(2)
+    GST = GST.toFixed(2)
+    total = total.toFixed(2)
+
+    document.getElementById("subtotal").value = subtotal   
+    document.getElementById("gst").value = GST
+    document.getElementById("total").value = total
+
+    document.getElementById("cnf").disabled = true;
+
+}
+
+function resetAll() {
+    subtotal = 0;
+    GST = 0;
+    total = 0;
+
+    document.getElementById("pizza").checked = false;
+    document.getElementById("chips").checked = false;
+    document.getElementById("drink").checked = false;
+    document.getElementById("sundae").checked = false;
+
+    document.getElementById("subtotal").value = null;   
+    document.getElementById("gst").value =  null;
+    document.getElementById("total").value =  null;
+
+    document.getElementById("cnf").disabled = false;
+
+}
+</script>
+
+<body align="center">
+<p>Order your items</p>
+<table align="center" border="1">
+    <tr>
+        <th>Main Meals</th>
+        <th>Sides</th>
+        <th>Drinks</th>
+        <th>Desserts</th>
+    </tr>
+    <tr>
+        <td><input type="checkbox" id="pizza" name="pizza">
+                <label for="pizza"> Pizza $16.95 </label></td>
+        <td><input type="checkbox" id="chips" name="chips">
+                <label for="chips"> Chips $3.95 </label></td>
+        <td><input type="checkbox" id="drink" name="drink">
+                <label for="drink"> Drink $2.00 </label></td>
+        <td><input type="checkbox" id="sundae" name="sundae">
+                <label for="sundae"> Sundae $5.45 </label></td>
+    </tr>
+    <tr>
+        <td align="center"><image src="images/pizza.jpg" width="64" height="64"></image></td>
+        <td align="center"><image src="images/chips.jpg" width="64" height="64"></image></td>
+        <td align="center"><image src="images/drink.jpg" width="64" height="64"></image></td>
+        <td align="center"><image src="images/sundae.jpg" width="64" height="64"></image></td>
+    </tr>
+</table>
+<p></p>
+<button type="button" id="cnf" onclick="checkSelections()">Confirm Selections</button>
+    <p>
+    <label for="sutotal">Subtotal</label>
+    <input type="text" id="subtotal" value="" style="text-align: right" size="5">
+    <label for="total">GST</label>
+    <input type="text" id="gst" value="" style="text-align: right;" size="5">
+    <label for="total">Total</label>
+    <input type="text" id="total" value="" style="text-align: right;" size="5">
+    </p><br>
+    <button type="button" id="reset" onclick="resetAll()">Reset</button>
+    
+    <p style="color:grey;">Copyright &copy; Damien Moser</p>
+</body>
+</html>
