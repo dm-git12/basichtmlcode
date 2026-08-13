@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Check Box and Radio button</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<script>
+    
+function evalCheckbox(){
+    if (document.getElementById("pizza").checked == true) {
+        alert("Pizza is selected.");
+        }
+
+    if (document.getElementById("chips").checked == true) {
+        alert("Chips is selected.");
+        }
+
+    if (document.getElementById("drink").checked == true) {
+        alert("Drink is selected.");
+        }
+
+}
+
+function evalRadio(){
+
+        if (document.getElementById('sport1').checked) {
+            alert("Tennis is selected.");        }
+        else if (document.getElementById('sport2').checked) {
+            alert("Rugby is selected."); 
+        }
+        else if(document.getElementById('sport3').checked) {
+            alert("Soccer is selected."); 
+        }
+        else {
+            alert("Please Selected a Sport!!!"); 
+        }
+    }
+
+function resetAll() {
+    
+    // Clear check boxes
+    document.getElementById("pizza").checked = false;;
+    document.getElementById("chips").checked = false;
+    document.getElementById("drink").checked = false;
+
+    // Clear radio buttons
+    document.getElementById("sport1").checked  = false;
+    document.getElementById("sport2").checked = false;
+    document.getElementById("sport3").checked = false;
+}
+</script>
+
+<body>
+<h1>Check Box and Radio button</h1>
+<h2>This template demonstrates how JavaScript processes checkbox and radio button selections.</h2>
+    <form>
+        <p>Check box</p>
+        <input type="checkbox" id="pizza" name="pizza">
+        <label for="pizza">Pizza  $16.95</label><br>
+
+        <input type="checkbox" id="chips" name="chips">
+        <label for="chips">Chips  $3.95</label><br>
+
+        <input type="checkbox" id="drink" name="drink">
+        <label for="drink">Drink $2.00</label><br> 
+        <button type="button" id="btchk" onclick="evalCheckbox()">Evaluate Checkbox</button>
+        <p>
+        <p>Please select your sport:</p>
+        <input type="radio" id="sport1" name="sport" value="Tennis">
+        <label for="sport1">Tennis</label><br>
+        <input type="radio" id="sport2" name="sport" value="Rugby">
+        <label for="sport2">Rugby</label><br>  
+        <input type="radio" id="sport3" name="sport" value="Soccer">
+        <label for="sport3">Soccer</label><br><br>
+        <button type="button" id="btradio" onclick="evalRadio()">Evaluate Radio button</button>
+    
+        <button type="button" id="reset" onclick="resetAll()">Reset</button>    
+    </form>
+<p style="color:grey;">Teacher &copy; Mr Solis</p>
+</body>
+</html>
